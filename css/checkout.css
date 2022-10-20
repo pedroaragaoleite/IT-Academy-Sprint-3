@@ -1,0 +1,8 @@
+#errorName, #errorEmail, #errorAddress, #errorLastN,
+#errorPassword, #errorPhone {
+    display: none;
+}
+
+.not-valid {
+    color: red;
+}
