@@ -74,17 +74,17 @@ var total = 0;
 // Exercise 1
 // 1. Loop for to the array products to get the item to add to cart
 // 2. Add found product to the cartList array
-function buy(id) {
-  for (let product in products) {
-    const item = products[product];
-    if (id === item.id) {
-      cartList.push({
-        ...item,
-        quantity: 1,
-      });
-    }
-  }
-}
+// function buy(id) {
+//   for (let product in products) {
+//     const item = products[product];
+//     if (id === item.id) {
+//       cartList.push({
+//         ...item,
+//         quantity: 1,
+//       });
+//     }
+//   }
+// }
 
 // Exercise 2
 function cleanCart() {
@@ -94,34 +94,37 @@ function cleanCart() {
 // Exercise 3
 // Calculate total price of the cart using the "cartList" array
 function calculateTotal() {
+  let totalPrice = document.getElementById("total_price");
+  let outputPrice = "";
   let total = 0;
-  for (let cartItem = 0; cartItem < cartList.length; cartItem++) {
-    const item = cartList[cartItem];
-    total = total + item.price * item.quantity;
-    console.log(total);
+  for (let cartItem = 0; cartItem < cart.length; cartItem++) {
+    const item = cart[cartItem];
+    total += item.discount;
+    // console.log(total);
   }
+  totalPrice.innerText = total;
 }
 
 // Exercise 4
 // Using the "cartlist" array that contains all the items in the shopping cart,
 // generate the "cart" array that does not contain repeated items, instead each item of this array "cart" shows the quantity of product.
-function generateCart() {
-  for (let i = 0; i < cartList.length; i++) {
-    let repeated = false;
+// function generateCart() {
+//   for (let i = 0; i < cartList.length; i++) {
+//     let repeated = false;
 
-    for (let item of cart) {
-      if (item.id === cartList[i].id) {
-        repeated = true;
-        item.quantity++;
-      }
-    }
-    if (!repeated) {
-      cart.push(cartList[i]);
-    }
-  }
-  document.getElementById("count_product").innerText = cart.length;
-  printCart();
-}
+//     for (let item of cart) {
+//       if (item.id === cartList[i].id) {
+//         repeated = true;
+//         item.quantity++;
+//       }
+//     }
+//     if (!repeated) {
+//       cart.push(cartList[i]);
+//     }
+//   }
+//   document.getElementById("count_product").innerText = cart.length;
+//   printCart();
+// }
 
 // Exercise 5
 // Apply promotions to each item in the array "cart"
@@ -129,16 +132,14 @@ function applyPromotionsCart() {
   for (let product of cart) {
     let total = 0;
     if (product.quantity >= 10 && product.id === 3) {
-      total =
-        total +
+      product.discount =
         product.price * product.quantity * (1 - product.offer.percent / 100);
-      console.log("total id3: $" + total);
+      console.log("total id3: $" + product.discount);
     }
     if (product.quantity >= 3 && product.id === 1) {
-      total =
-        total +
+      product.discount =
         product.price * product.quantity * (1 - product.offer.percent / 100);
-      console.log("total id1 $" + total);
+      console.log("total id1 $" + product.discount);
     }
   }
 }
@@ -146,6 +147,9 @@ function applyPromotionsCart() {
 // Exercise 6
 // Fill the shopping cart modal manipulating the shopping cart dom
 function printCart() {
+  applyPromotionsCart();
+  calculateTotal();
+  console.log(total);
   const cart_List = document.getElementById("cart_list");
   outputCart = "";
   cart.forEach((item) => {
@@ -154,7 +158,7 @@ function printCart() {
               <th scope="row">${item.name}</th>
               <td class="price">${item.price}</td>
               <td class="qty">${item.quantity}</td>
-              <td>$ ${item.price * item.quantity}</td>
+              <td>$ ${item.discount.toFixed(2)}</td>
               </tr>
       `;
     cart_List.innerHTML = outputCart;
@@ -167,13 +171,42 @@ function printCart() {
 function addToCart(id) {
   // Refactor previous code in order to simplify it
   // 1. Loop for to the array products to get the item to add to cart
-  // 2. Add found product to the cart array or update its quantity in case it has been added previously.
+
+  for (let i = 0; i < products.length; i++) {
+    let product = products[i];
+    let repeated = false;
+
+    // 2. Add found product to the cart array or update its quantity in case it has been added previously.
+    for (let item = 0; item < cart.length; item++) {
+      if (cart[item].id == products[i].id && cart[item].id == id) {
+        repeated = true;
+        cart[item].quantity++;
+      }
+    }
+
+    if (!repeated && id == product.id) {
+      console.log(product);
+      cart.push({ ...product, quantity: 1, discount: product.price });
+    }
+  }
+  calculateTotal();
+  document.getElementById("count_product").innerText = cart.length;
+  console.log(cart);
 }
 
 // Exercise 8
 function removeFromCart(id) {
-  // 1. Loop for to the array products to get the item to add to cart
-  // 2. Add found product to the cartList array
+  for (let item of cart) {
+    if (item.id == id) {
+      if (item.quantity > 1) {
+        item.quantity--;
+      } else {
+        cart.splice(0, cart.length);
+      }
+    }
+  }
+  // applyPromotionsCart();
+  // calculateTotal();
 }
 
 function open_modal() {
