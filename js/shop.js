@@ -201,8 +201,9 @@ function removeFromCart(id) {
       if (item.quantity > 1) {
         item.quantity--;
       } else {
-        cart.splice(0, cart.length);
+        cart.splice(item.id, 1);
       }
+      applyPromotionsCart();
     }
   }
   // applyPromotionsCart();
